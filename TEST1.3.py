@@ -185,6 +185,6 @@ def main():
                 print(f"Exception Message: {e}")
             continue
         print(data_we_want)
-        df.to_csv('./data_csvs3/data_'+str(index)+'.csv', index=False)
+        df.to_csv('./data3/data_'+str(index)+'.csv', index=False)
 
 main()
