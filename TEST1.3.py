@@ -2,7 +2,7 @@ from chat_downloader import ChatDownloader
 from api_keys import *
 import numpy as np
 import math
-importt pandas as pd
+import pandas as pd
 import requests
 from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
