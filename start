@@ -1,0 +1,6 @@
+sudo apt update
+sudo apt install git
+sudo apt-get install tmux
+sudo apt install python3 
+sudo apt install python3-venv
+sudo apt install python3-pip
