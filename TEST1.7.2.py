@@ -100,7 +100,7 @@ def get_channel_stats(channel_id):
 
 def main():
 
-    c_names = pd.read_csv("male_extra.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
+    c_names = pd.read_csv("male_extra2.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
     df = pd.DataFrame(columns = ['channel_name', 'channel_id', 'video_name', 'video_id', 'description', 'published_at',
                                 'video_start_time', 'video_end_time', 'video_length', 'num_superchats', 'val_superchats',
                                 'locale', 'viewcount', 'tags', 'timestamps','original_value', 'currency', 'usd_value','total_views', 'subscriber_count', 'gender', 'language', 'affiliation'])
