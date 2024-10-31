@@ -54,18 +54,12 @@ def get_superchats(url):
     return (total_num_chats, total_superchat_earnings_usd, timestamps, original_value, currency, usd_value)
 
 def get_last_50_videos(channel_id):
-    api_str = "https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&id={0}&key={1}"
-    deet = api_str.format(channel_id, YOUTUBE_API_KEY)
-    z = requests.get(deet).json()
-    # the "uploads"
-    #print(z)
-    uploads_id = z["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
-    #print(uploads_id)
-
-    videos_list_p1 = "https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId={0}&key={1}"
-    deet2 = videos_list_p1.format(uploads_id, YOUTUBE_API_KEY)
-    channel_last_50_videos = requests.get(deet2).json()
-    return channel_last_50_videos
+    search_api_str = "https://youtube.googleapis.com/youtube/v3/search?part=id&channelId={0}&type=video&eventType=completed&maxResults=50&key={1}"
+    search_deet = search_api_str.format(channel_id, YOUTUBE_API_KEY)
+    response = requests.get(search_deet).json()
+    
+    video_ids = [item['id']['videoId'] for item in response['items']]
+    return video_ids
 
 def get_video_details(vid_id):
     vid_details_template = "https://youtube.googleapis.com/youtube/v3/videos?part=liveStreamingDetails%2Cstatistics%2Cstatus%2CtopicDetails%2Clocalizations%2Csnippet%2CcontentDetails&id={0}&key={1}"
@@ -75,12 +69,11 @@ def get_video_details(vid_id):
 
 def get_all_vids_details(channel_videos):
     out = []
-    for i in channel_videos["items"]:
-        vid_id = i["contentDetails"]["videoId"]
+    for vid_id in channel_videos:
         a = get_video_details(vid_id)
-        out.append(a)
+        if 'liveStreamingDetails' in a['items'][0]:  # Ensures it's a livestream with potential chat replay
+            out.append(a)
     return out
-
 
 def main():
 
@@ -110,8 +103,8 @@ def main():
                                 item['id'],
                                 item['snippet']['description'],
                                 item['snippet']['publishedAt'],
-                                item['liveStreamingDetails']['actualStartTime'] if 'liveStreamingDetails' in item else None,
-                                item['liveStreamingDetails']['actualEndTime'] if 'liveStreamingDetails' in item else None,
+                                item['liveStreamingDetails']['actualStartTime'] 
+                                item['liveStreamingDetails']['actualEndTime'] 
                                 0, # video length, to be computed later using subtraction, its also ['contentDetails']['duration']
                                 0, # num_superchats, to be computed next
                                 0.0, # val_superchats, to be computed next
