@@ -84,7 +84,7 @@ def get_all_vids_details(channel_videos):
 
 def main():
 
-    c_names = pd.read_csv("vtuber_channels_test.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
+    c_names = pd.read_csv("akemi.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
     df = pd.DataFrame(columns = ['channel_name', 'channel_id', 'video_name', 'video_id', 'description', 'published_at', 
                                 'video_start_time', 'video_end_time', 'video_length', 'num_superchats', 'val_superchats',
                                 'locale', 'viewcount', 'tags', 'usd_value', 'timestamps', 'original_value', 'currency', 'gender', 'language'])
