@@ -103,8 +103,8 @@ def main():
                                 item['id'],
                                 item['snippet']['description'],
                                 item['snippet']['publishedAt'],
-                                item['liveStreamingDetails']['actualStartTime'] 
-                                item['liveStreamingDetails']['actualEndTime'] 
+                                item['liveStreamingDetails']['actualStartTime'], 
+                                item['liveStreamingDetails']['actualEndTime'],
                                 0, # video length, to be computed later using subtraction, its also ['contentDetails']['duration']
                                 0, # num_superchats, to be computed next
                                 0.0, # val_superchats, to be computed next
