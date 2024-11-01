@@ -75,6 +75,23 @@ def get_all_vids_details(channel_videos):
             out.append(a)
     return out
 
+def get_channel_stats(channel_id):
+    """
+    Function to retrieve the total views and subscriber count of a YouTube channel
+    """
+    api_str = "https://youtube.googleapis.com/youtube/v3/channels?part=statistics&id={0}&key={1}"
+    deet = api_str.format(channel_id, YOUTUBE_API_KEY)
+    channel_stats = requests.get(deet).json()
+
+    try:
+        total_views = channel_stats['items'][0]['statistics']['viewCount']
+        subscriber_count = channel_stats['items'][0]['statistics']['subscriberCount']
+        return total_views, subscriber_count
+    except KeyError as e:
+        print(f"Exception Type: {type(e).__name__}")
+        print(f"Exception Message: {e}")
+        return None, None
+
 def main():
 
     c_names = pd.read_csv("7.3.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
