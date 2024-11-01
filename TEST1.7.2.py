@@ -54,18 +54,12 @@ def get_superchats(url):
     return (total_num_chats, total_superchat_earnings_usd, timestamps, original_value, currency, usd_value)
 
 def get_last_50_videos(channel_id):
-    api_str = "https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&id={0}&key={1}"
-    deet = api_str.format(channel_id, YOUTUBE_API_KEY)
-    z = requests.get(deet).json()
-    # the "uploads"
-    #print(z)
-    uploads_id = z["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
-    #print(uploads_id)
-
-    videos_list_p1 = "https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId={0}&key={1}"
-    deet2 = videos_list_p1.format(uploads_id, YOUTUBE_API_KEY)
-    channel_last_50_videos = requests.get(deet2).json()
-    return channel_last_50_videos
+    search_api_str = "https://youtube.googleapis.com/youtube/v3/search?part=id&channelId={0}&type=video&eventType=completed&maxResults=50&key={1}"
+    search_deet = search_api_str.format(channel_id, YOUTUBE_API_KEY)
+    response = requests.get(search_deet).json()
+    
+    video_ids = [item['id']['videoId'] for item in response['items']]
+    return video_ids
 
 def get_video_details(vid_id):
     vid_details_template = "https://youtube.googleapis.com/youtube/v3/videos?part=liveStreamingDetails%2Cstatistics%2Cstatus%2CtopicDetails%2Clocalizations%2Csnippet%2CcontentDetails&id={0}&key={1}"
@@ -75,32 +69,15 @@ def get_video_details(vid_id):
 
 def get_all_vids_details(channel_videos):
     out = []
-    for i in channel_videos["items"]:
-        vid_id = i["contentDetails"]["videoId"]
+    for vid_id in channel_videos:
         a = get_video_details(vid_id)
-        out.append(a)
+        if 'liveStreamingDetails' in a['items'][0]:  # Ensures it's a livestream with potential chat replay
+            out.append(a)
     return out
-
-def get_channel_stats(channel_id):
-    """
-    Function to retrieve the total views and subscriber count of a YouTube channel
-    """
-    api_str = "https://youtube.googleapis.com/youtube/v3/channels?part=statistics&id={0}&key={1}"
-    deet = api_str.format(channel_id, YOUTUBE_API_KEY)
-    channel_stats = requests.get(deet).json()
-
-    try:
-        total_views = channel_stats['items'][0]['statistics']['viewCount']
-        subscriber_count = channel_stats['items'][0]['statistics']['subscriberCount']
-        return total_views, subscriber_count
-    except KeyError as e:
-        print(f"Exception Type: {type(e).__name__}")
-        print(f"Exception Message: {e}")
-        return None, None
 
 def main():
 
-    c_names = pd.read_csv("male_extra2.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
+    c_names = pd.read_csv("7.2.csv", names=["vtuber_name", "affiliation", "channel_id","gender","language"])
     df = pd.DataFrame(columns = ['channel_name', 'channel_id', 'video_name', 'video_id', 'description', 'published_at',
                                 'video_start_time', 'video_end_time', 'video_length', 'num_superchats', 'val_superchats',
                                 'locale', 'viewcount', 'tags', 'timestamps','original_value', 'currency', 'usd_value','total_views', 'subscriber_count', 'gender', 'language', 'affiliation'])
@@ -185,6 +162,6 @@ def main():
                 print(f"Exception Message: {e}")
             continue
         print(data_we_want)
-        df.to_csv('./data_csvs7/data_'+str(index)+'.csv', index=False)
+        df.to_csv('./data_csvs1/data_'+str(index)+'.csv', index=False)
 
 main()
